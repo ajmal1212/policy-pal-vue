@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, Shield } from 'lucide-react';
 
 interface FamilyMember {
   name: string;
@@ -13,6 +13,7 @@ interface FamilyMember {
 
 interface HealthInsuranceFormProps {
   formData: {
+    sumInsuredPlan: string;
     familyMembers: string;
     familyMemberDetails: FamilyMember[];
   };
@@ -32,6 +33,29 @@ const HealthInsuranceForm: React.FC<HealthInsuranceFormProps> = ({
         Health Details
       </h3>
       <div className="space-y-6">
+        {/* Sum Insured Plan */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Shield className="inline h-4 w-4 mr-2" />
+            Sum Insured Plan *
+          </label>
+          <select
+            name="sumInsuredPlan"
+            value={formData.sumInsuredPlan}
+            onChange={onInputChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          >
+            <option value="">Select Sum Insured Plan</option>
+            <option value="base-5-lac">Base Plan - ₹5 Lac Sum Insured</option>
+            <option value="base-10-lac">Base Plan - ₹10 Lac Sum Insured</option>
+            <option value="top-up-40-lac">Top Up Plan - ₹40 Lac</option>
+            <option value="top-up-45-lac">Top Up Plan - ₹45 Lac</option>
+            <option value="base-5-topup-45">Base ₹5 Lac + Top Up ₹45 Lac</option>
+            <option value="base-10-topup-40">Base ₹10 Lac + Top Up ₹40 Lac</option>
+          </select>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Number of Family Members *</label>
           <select
@@ -50,7 +74,7 @@ const HealthInsuranceForm: React.FC<HealthInsuranceFormProps> = ({
           </select>
         </div>
 
-        {/* Family Member Details */}
+        {/* Family Member Details - Always show when familyMemberDetails has members */}
         {formData.familyMemberDetails.length > 0 && (
           <div>
             <h4 className="text-md font-semibold text-gray-900 mb-4">Family Members Information</h4>

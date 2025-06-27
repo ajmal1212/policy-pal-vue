@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import InsuranceTypeSelector from '../components/quote/InsuranceTypeSelector';
@@ -7,8 +7,11 @@ import PersonalInformation from '../components/quote/PersonalInformation';
 import CarInsuranceForm from '../components/quote/CarInsuranceForm';
 import HealthInsuranceForm from '../components/quote/HealthInsuranceForm';
 import LifeInsuranceForm from '../components/quote/LifeInsuranceForm';
+import { useToast } from '@/hooks/use-toast';
 
 const GetQuote = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     insuranceType: 'car',
     fullName: '',
@@ -24,6 +27,7 @@ const GetQuote = () => {
     carYear: '',
     registrationNumber: '',
     // Health insurance specific
+    sumInsuredPlan: '',
     familyMembers: '1',
     familyMemberDetails: [] as Array<{
       name: string;
@@ -38,10 +42,67 @@ const GetQuote = () => {
     smokingStatus: 'no'
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Initialize family member details when component mounts or insurance type changes
+  useEffect(() => {
+    if (formData.insuranceType === 'health' && formData.familyMemberDetails.length === 0) {
+      const memberCount = parseInt(formData.familyMembers);
+      const relations = ['Self', 'Spouse', 'Child 1', 'Child 2', 'Child 3', 'Child 4'];
+      const newFamilyMemberDetails = Array.from({ length: memberCount }, (_, index) => ({
+        name: '',
+        dateOfBirth: '',
+        gender: '',
+        relation: relations[index] || `Member ${index + 1}`,
+        medicalCondition: '',
+        conditionDescription: ''
+      }));
+      
+      setFormData(prev => ({
+        ...prev,
+        familyMemberDetails: newFamilyMemberDetails
+      }));
+    }
+  }, [formData.insuranceType, formData.familyMembers]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission logic here
+    setIsSubmitting(true);
+    
+    try {
+      console.log('Submitting form data:', formData);
+      
+      const response = await fetch('https://n8n.codenetic.tech/webhook/get-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          timestamp: new Date().toISOString(),
+          source: 'quote-form'
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Quote Request Submitted!",
+          description: "We'll get back to you with your personalized quote soon.",
+        });
+        
+        // Optionally reset form or redirect
+        console.log('Form submitted successfully');
+      } else {
+        throw new Error('Failed to submit form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Submission Error",
+        description: "There was an error submitting your quote request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -145,9 +206,10 @@ const GetQuote = () => {
             <div className="flex items-center justify-center pt-8">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-12 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
+                disabled={isSubmitting}
+                className="bg-blue-600 text-white px-12 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Get Free Quotes
+                {isSubmitting ? 'Submitting...' : 'Get Free Quotes'}
               </button>
             </div>
           </form>
