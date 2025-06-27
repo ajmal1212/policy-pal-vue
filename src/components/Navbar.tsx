@@ -11,7 +11,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-blue-900">InsureMax</span>
+              <span className="text-2xl font-bold text-blue-900">GoPocket</span>
             </Link>
           </div>
           

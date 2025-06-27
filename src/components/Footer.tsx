@@ -11,7 +11,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-6">
               <Shield className="h-8 w-8 text-blue-400" />
-              <span className="text-2xl font-bold">InsureMax</span>
+              <span className="text-2xl font-bold">GoPocket</span>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               India's leading insurance marketplace helping millions find the right insurance at the best prices.
@@ -57,7 +57,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300">support@insuremax.com</span>
+                <span className="text-gray-300">support@GoPocket.in</span>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-blue-400 mt-1" />
@@ -73,7 +73,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 InsureMax. All rights reserved. IRDAI Registration Number: XXXXX
+              © 2024 GoPocket. All rights reserved. IRDAI Registration Number: XXXXX
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</Link>
