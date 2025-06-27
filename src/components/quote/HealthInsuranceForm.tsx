@@ -7,12 +7,13 @@ interface FamilyMember {
   dateOfBirth: string;
   gender: string;
   relation: string;
+  medicalCondition: string;
+  conditionDescription: string;
 }
 
 interface HealthInsuranceFormProps {
   formData: {
     familyMembers: string;
-    medicalHistory: string;
     familyMemberDetails: FamilyMember[];
   };
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -31,37 +32,22 @@ const HealthInsuranceForm: React.FC<HealthInsuranceFormProps> = ({
         Health Details
       </h3>
       <div className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Number of Family Members *</label>
-            <select
-              name="familyMembers"
-              value={formData.familyMembers}
-              onChange={onInputChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            >
-              <option value="1">Self (1 Member)</option>
-              <option value="2">Self + Spouse (2 Members)</option>
-              <option value="3">Self + Spouse + 1 Child (3 Members)</option>
-              <option value="4">Self + Spouse + 2 Children (4 Members)</option>
-              <option value="5">Self + Spouse + 3 Children (5 Members)</option>
-              <option value="6">Self + Spouse + 4 Children (6 Members)</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Any Pre-existing Medical Conditions? *</label>
-            <select
-              name="medicalHistory"
-              value={formData.medicalHistory}
-              onChange={onInputChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            >
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Number of Family Members *</label>
+          <select
+            name="familyMembers"
+            value={formData.familyMembers}
+            onChange={onInputChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          >
+            <option value="1">Self (1 Member)</option>
+            <option value="2">Self + Spouse (2 Members)</option>
+            <option value="3">Self + Spouse + 1 Child (3 Members)</option>
+            <option value="4">Self + Spouse + 2 Children (4 Members)</option>
+            <option value="5">Self + Spouse + 3 Children (5 Members)</option>
+            <option value="6">Self + Spouse + 4 Children (6 Members)</option>
+          </select>
         </div>
 
         {/* Family Member Details */}
@@ -72,7 +58,7 @@ const HealthInsuranceForm: React.FC<HealthInsuranceFormProps> = ({
               {formData.familyMemberDetails.map((member, index) => (
                 <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                   <h5 className="text-sm font-medium text-gray-700 mb-3">{member.relation}</h5>
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-3 gap-4 mb-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                       <input
@@ -108,6 +94,36 @@ const HealthInsuranceForm: React.FC<HealthInsuranceFormProps> = ({
                         <option value="other">Other</option>
                       </select>
                     </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Any Pre-existing Medical Conditions? *</label>
+                      <select
+                        value={member.medicalCondition}
+                        onChange={(e) => onFamilyMemberChange(index, 'medicalCondition', e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select</option>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                    
+                    {member.medicalCondition === 'yes' && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Describe the Medical Condition(s) *</label>
+                        <textarea
+                          value={member.conditionDescription}
+                          onChange={(e) => onFamilyMemberChange(index, 'conditionDescription', e.target.value)}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Please describe all medical conditions/illnesses in detail"
+                          rows={3}
+                          required
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

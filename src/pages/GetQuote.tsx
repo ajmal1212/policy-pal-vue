@@ -25,12 +25,13 @@ const GetQuote = () => {
     registrationNumber: '',
     // Health insurance specific
     familyMembers: '1',
-    medicalHistory: 'no',
     familyMemberDetails: [] as Array<{
       name: string;
       dateOfBirth: string;
       gender: string;
       relation: string;
+      medicalCondition: string;
+      conditionDescription: string;
     }>,
     // Life insurance specific
     annualIncome: '',
@@ -54,7 +55,9 @@ const GetQuote = () => {
         name: '',
         dateOfBirth: '',
         gender: '',
-        relation: relations[index] || `Member ${index + 1}`
+        relation: relations[index] || `Member ${index + 1}`,
+        medicalCondition: '',
+        conditionDescription: ''
       }));
       
       setFormData({
@@ -108,11 +111,13 @@ const GetQuote = () => {
               onTypeChange={handleInsuranceTypeChange}
             />
 
-            {/* Personal Information */}
-            <PersonalInformation
-              formData={formData}
-              onInputChange={handleInputChange}
-            />
+            {/* Personal Information - Only show for non-health insurance */}
+            {formData.insuranceType !== 'health' && (
+              <PersonalInformation
+                formData={formData}
+                onInputChange={handleInputChange}
+              />
+            )}
 
             {/* Insurance Specific Fields */}
             {formData.insuranceType === 'car' && (
